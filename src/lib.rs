@@ -373,6 +373,30 @@ impl NovaEventsContract {
             .unwrap_or(0)
     }
 
+    /// Organizer closes an event, preventing further ticket sales and sponsorships.
+    /// Status transitions from Active → Ended.
+    pub fn end_event(env: Env, organizer: Address, event_id: u32) {
+        organizer.require_auth();
+
+        let mut event: Event = env
+            .storage()
+            .persistent()
+            .get(&DataKey::Event(event_id))
+            .expect("event not found");
+
+        if event.organizer != organizer {
+            panic!("not the organizer");
+        }
+        if event.status != EventStatus::Active {
+            panic!("event is not active");
+        }
+
+        event.status = EventStatus::Ended;
+        env.storage()
+            .persistent()
+            .set(&DataKey::Event(event_id), &event);
+    }
+
     /// Returns the token contract address configured during initialize.
     pub fn get_token(env: Env) -> Address {
         env.storage()

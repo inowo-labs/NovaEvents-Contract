@@ -271,6 +271,69 @@ fn test_double_redeem_fails() {
 }
 
 #[test]
+fn test_end_event_changes_status_to_ended() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, _, _, client) = setup(&env);
+    let organizer = Address::generate(&env);
+
+    let event_id = create_test_event(&env, &client, &organizer);
+    assert_eq!(client.get_event(&event_id).status, EventStatus::Active);
+
+    client.end_event(&organizer, &event_id);
+    assert_eq!(client.get_event(&event_id).status, EventStatus::Ended);
+}
+
+#[test]
+fn test_buy_ticket_blocked_after_end_event() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, token_admin, _, client) = setup(&env);
+    let organizer = Address::generate(&env);
+    let buyer = Address::generate(&env);
+
+    token_admin.mint(&buyer, &100_000_000_i128);
+
+    let event_id = create_test_event(&env, &client, &organizer);
+    client.end_event(&organizer, &event_id);
+
+    let result = client.try_buy_ticket(&buyer, &event_id, &0);
+    assert!(result.is_err());
+}
+
+#[test]
+fn test_end_event_by_non_organizer_fails() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, _, _, client) = setup(&env);
+    let organizer = Address::generate(&env);
+    let impostor = Address::generate(&env);
+
+    let event_id = create_test_event(&env, &client, &organizer);
+
+    let result = client.try_end_event(&impostor, &event_id);
+    assert!(result.is_err());
+}
+
+#[test]
+fn test_end_already_ended_event_fails() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, _, _, client) = setup(&env);
+    let organizer = Address::generate(&env);
+
+    let event_id = create_test_event(&env, &client, &organizer);
+    client.end_event(&organizer, &event_id);
+
+    let result = client.try_end_event(&organizer, &event_id);
+    assert!(result.is_err());
+}
+
+#[test]
 fn test_double_initialize_rejected() {
     let env = Env::default();
     env.mock_all_auths();
