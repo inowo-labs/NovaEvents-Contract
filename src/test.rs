@@ -544,3 +544,27 @@ fn test_zero_supply_cap_tier_rejected() {
 
     assert!(result.is_err());
 }
+
+#[test]
+fn test_get_organizer_returns_correct_address() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, _, _, client) = setup(&env);
+    let organizer = Address::generate(&env);
+
+    let event_id = create_test_event(&env, &client, &organizer);
+
+    assert_eq!(client.get_organizer(&event_id), organizer);
+}
+
+#[test]
+fn test_get_organizer_nonexistent_event_fails() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, _, _, client) = setup(&env);
+
+    let result = client.try_get_organizer(&99);
+    assert!(result.is_err());
+}

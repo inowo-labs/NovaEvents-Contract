@@ -415,6 +415,16 @@ impl NovaEventsContract {
             .expect("event not found");
         event.balance
     }
+
+    /// Returns the organizer address for an event.
+    /// Convenience wrapper so callers don't decode the full Event struct.
+    pub fn get_organizer(env: Env, event_id: u32) -> Address {
+        env.storage()
+            .persistent()
+            .get::<DataKey, Event>(&DataKey::Event(event_id))
+            .expect("event not found")
+            .organizer
+    }
 }
 
 #[cfg(test)]
