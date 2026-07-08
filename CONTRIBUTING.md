@@ -51,6 +51,22 @@ cargo test
 
 All 18 tests must pass before you open a PR. New functions require new tests.
 
+If you're working on a single function, you don't need to run the full suite every time:
+
+```bash
+# Run a single test by name
+cargo test test_end_event_changes_status_to_ended
+
+# Run all tests whose name contains a keyword
+cargo test end_event
+```
+
+Add `-- --nocapture` to see `println!` output during tests:
+
+```bash
+cargo test -- --nocapture
+```
+
 ### Build the WASM artifact
 
 ```bash
