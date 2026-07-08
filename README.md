@@ -126,6 +126,26 @@ stellar contract deploy \
 
 **Testnet USDC token:** `CAUJTFVKA5WCN4ZPUDBRDAS3DT5HVKNQTLFT32KDAFVGJRTB7VPRVNRT`
 
+## Function reference
+
+| Function | Parameters | Returns | Description |
+|----------|------------|---------|--------------|
+| `initialize` | `token: Address` | — | One-time setup; records the USDC token contract address |
+| `create_event` | `organizer: Address, name: String, description: String, venue: String, date_unix: u64, funding_goal: i128, tiers: Vec<TierInput>` | `u32` (event ID) | Organizer creates a new event with one or more ticket tiers |
+| `buy_ticket` | `buyer: Address, event_id: u32, tier_index: u32` | `u32` (ticket ID) | Buyer purchases a ticket in a given tier, paying `tier.price` USDC |
+| `redeem_ticket` | `organizer: Address, event_id: u32, ticket_id: u32` | — | Organizer checks in (redeems) a ticket at the door |
+| `sponsor_event` | `sponsor: Address, event_id: u32, amount: i128` | — | Sponsor contributes USDC to an event; recorded publicly against the sponsor's address |
+| `end_event` | `organizer: Address, event_id: u32` | — | Organizer closes an event (status `Active` → `Ended`), blocking further ticket sales and sponsorships |
+| `get_event` | `event_id: u32` | `Event` | Returns the full event record |
+| `get_tiers` | `event_id: u32` | `Vec<TicketTier>` | Returns the ticket tiers for an event, including live sales counts |
+| `get_ticket` | `event_id: u32, ticket_id: u32` | `Ticket` | Returns a single ticket's ownership record |
+| `get_sponsorships` | `event_id: u32` | `Vec<Sponsorship>` | Returns all sponsorship contributions for an event |
+| `event_count` | — | `u32` | Returns the total number of events created |
+| `ticket_count` | `event_id: u32` | `u32` | Returns the number of tickets sold for an event |
+| `get_token` | — | `Address` | Returns the USDC token contract address configured during `initialize` |
+| `get_balance` | `event_id: u32` | `i128` | Returns the current USDC balance held by the contract for an event |
+| `get_organizer` | `event_id: u32` | `Address` | Returns the organizer address for an event |
+
 ## Contributing
 
 Contributions are welcome. This project is open to developers, designers, and product builders who want to help bring transparent event infrastructure to Stellar.
