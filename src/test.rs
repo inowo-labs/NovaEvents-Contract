@@ -351,6 +351,24 @@ fn test_sponsor_with_zero_amount_rejected() {
 }
 
 #[test]
+fn test_sponsor_rejected_on_ended_event() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, token_admin, _, client) = setup(&env);
+    let organizer = Address::generate(&env);
+    let sponsor = Address::generate(&env);
+
+    token_admin.mint(&sponsor, &100_000_000_i128);
+
+    let event_id = create_test_event(&env, &client, &organizer);
+    client.end_event(&organizer, &event_id);
+
+    let result = client.try_sponsor_event(&sponsor, &event_id, &100_000_000_i128);
+    assert!(result.is_err());
+}
+
+#[test]
 fn test_double_initialize_rejected() {
     let env = Env::default();
     env.mock_all_auths();
