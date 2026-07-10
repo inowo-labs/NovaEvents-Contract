@@ -373,6 +373,17 @@ impl NovaEventsContract {
             .unwrap_or(0)
     }
 
+    /// Returns the total number of sponsorship contributions for an event.
+    /// Returns 0 if the event has no sponsors yet.
+    pub fn sponsor_count(env: Env, event_id: u32) -> u32 {
+        let sponsorships: Vec<Sponsorship> = env
+            .storage()
+            .persistent()
+            .get(&DataKey::Sponsorships(event_id))
+            .unwrap_or_else(|| Vec::new(&env));
+        sponsorships.len()
+    }
+
     /// Organizer closes an event, preventing further ticket sales and sponsorships.
     /// Status transitions from Active → Ended.
     pub fn end_event(env: Env, organizer: Address, event_id: u32) {
