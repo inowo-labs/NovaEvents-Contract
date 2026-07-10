@@ -586,3 +586,17 @@ fn test_get_organizer_nonexistent_event_fails() {
     let result = client.try_get_organizer(&99);
     assert!(result.is_err());
 }
+
+#[test]
+fn test_tier_count_returns_correct_count() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, _, _, client) = setup(&env);
+    let organizer = Address::generate(&env);
+
+    // create_test_event uses default_tiers which has 2 tiers (General + VIP)
+    let event_id = create_test_event(&env, &client, &organizer);
+
+    assert_eq!(client.tier_count(&event_id), 2);
+}
