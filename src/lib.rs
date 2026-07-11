@@ -373,6 +373,15 @@ impl NovaEventsContract {
             .unwrap_or(0)
     }
 
+    /// Returns the total number of sponsorship contributions for an event.
+    /// Returns 0 if the event has no sponsors yet.
+    pub fn sponsor_count(env: Env, event_id: u32) -> u32 {
+        let sponsorships: Vec<Sponsorship> = env
+            .storage()
+            .persistent()
+            .get(&DataKey::Sponsorships(event_id))
+            .unwrap_or_else(|| Vec::new(&env));
+        sponsorships.len()
     /// Returns the number of ticket tiers for an event.
     pub fn tier_count(env: Env, event_id: u32) -> u32 {
         let tiers: Vec<TicketTier> = env

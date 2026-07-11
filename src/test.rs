@@ -588,6 +588,7 @@ fn test_get_organizer_nonexistent_event_fails() {
 }
 
 #[test]
+fn test_sponsor_count_returns_zero_with_no_sponsors() {
 fn test_tier_count_returns_correct_count() {
     let env = Env::default();
     env.mock_all_auths();
@@ -595,6 +596,32 @@ fn test_tier_count_returns_correct_count() {
     let (_, _, _, client) = setup(&env);
     let organizer = Address::generate(&env);
 
+    let event_id = create_test_event(&env, &client, &organizer);
+
+    // No sponsorships have been made — count must be 0.
+    assert_eq!(client.sponsor_count(&event_id), 0);
+}
+
+#[test]
+fn test_sponsor_count_returns_correct_count_after_sponsorships() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, token_admin, _, client) = setup(&env);
+    let organizer = Address::generate(&env);
+    let sponsor_a = Address::generate(&env);
+    let sponsor_b = Address::generate(&env);
+
+    token_admin.mint(&sponsor_a, &1_000_000_000_i128);
+    token_admin.mint(&sponsor_b, &1_000_000_000_i128);
+
+    let event_id = create_test_event(&env, &client, &organizer);
+
+    client.sponsor_event(&sponsor_a, &event_id, &100_000_000_i128);
+    assert_eq!(client.sponsor_count(&event_id), 1);
+
+    client.sponsor_event(&sponsor_b, &event_id, &200_000_000_i128);
+    assert_eq!(client.sponsor_count(&event_id), 2);
     // create_test_event uses default_tiers which has 2 tiers (General + VIP)
     let event_id = create_test_event(&env, &client, &organizer);
 
