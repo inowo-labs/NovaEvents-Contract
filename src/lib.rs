@@ -373,6 +373,16 @@ impl NovaEventsContract {
             .unwrap_or(0)
     }
 
+    /// Returns the number of ticket tiers for an event.
+    pub fn tier_count(env: Env, event_id: u32) -> u32 {
+        let tiers: Vec<TicketTier> = env
+            .storage()
+            .persistent()
+            .get(&DataKey::Tiers(event_id))
+            .expect("event not found");
+        tiers.len()
+    }
+
     /// Organizer closes an event, preventing further ticket sales and sponsorships.
     /// Status transitions from Active → Ended.
     pub fn end_event(env: Env, organizer: Address, event_id: u32) {
