@@ -629,12 +629,31 @@ fn test_sponsor_count_returns_correct_count_after_sponsorships() {
 }
 
 #[test]
+fn test_ticket_count_increments_with_each_purchase() {
 fn test_buy_ticket_rejected_on_ended_event() {
     let env = Env::default();
     env.mock_all_auths();
 
     let (_, token_admin, _, client) = setup(&env);
     let organizer = Address::generate(&env);
+    let buyer_a = Address::generate(&env);
+    let buyer_b = Address::generate(&env);
+
+    token_admin.mint(&buyer_a, &100_000_000_i128); // 10 USDC
+    token_admin.mint(&buyer_b, &100_000_000_i128); // 10 USDC
+
+    let event_id = create_test_event(&env, &client, &organizer);
+
+    // Before any purchase, ticket_count must be 0.
+    assert_eq!(client.ticket_count(&event_id), 0);
+
+    // First purchase — buyer_a buys a General tier ticket.
+    client.buy_ticket(&buyer_a, &event_id, &0);
+    assert_eq!(client.ticket_count(&event_id), 1);
+
+    // Second purchase — buyer_b (distinct buyer) buys another General tier ticket.
+    client.buy_ticket(&buyer_b, &event_id, &0);
+    assert_eq!(client.ticket_count(&event_id), 2);
     let buyer = Address::generate(&env);
 
     // Give the buyer enough funds to buy a ticket
