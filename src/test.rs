@@ -627,3 +627,27 @@ fn test_sponsor_count_returns_correct_count_after_sponsorships() {
 
     assert_eq!(client.tier_count(&event_id), 2);
 }
+
+#[test]
+fn test_buy_ticket_rejected_on_ended_event() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, token_admin, _, client) = setup(&env);
+    let organizer = Address::generate(&env);
+    let buyer = Address::generate(&env);
+
+    // Give the buyer enough funds to buy a ticket
+    token_admin.mint(&buyer, &100_000_000_i128); // 10 USDC
+
+    // Create an event and immediately end it
+    let event_id = create_test_event(&env, &client, &organizer);
+    client.end_event(&organizer, &event_id);
+
+    // Verify the event status is now Ended
+    assert_eq!(client.get_event(&event_id).status, EventStatus::Ended);
+
+    // Attempting to buy a ticket on an Ended event must be rejected
+    let result = client.try_buy_ticket(&buyer, &event_id, &0);
+    assert!(result.is_err());
+}
