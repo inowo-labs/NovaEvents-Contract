@@ -49,7 +49,7 @@ cargo build
 cargo test
 ```
 
-All 18 tests must pass before you open a PR. New functions require new tests.
+All 31 tests must pass before you open a PR. New functions require new tests.
 
 If you're working on a single function, you don't need to run the full suite every time:
 
