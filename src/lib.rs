@@ -382,6 +382,8 @@ impl NovaEventsContract {
             .get(&DataKey::Sponsorships(event_id))
             .unwrap_or_else(|| Vec::new(&env));
         sponsorships.len()
+    }
+
     /// Returns the number of ticket tiers for an event.
     pub fn tier_count(env: Env, event_id: u32) -> u32 {
         let tiers: Vec<TicketTier> = env
