@@ -645,3 +645,37 @@ fn test_ticket_count_increments_with_each_purchase() {
     client.buy_ticket(&buyer_b, &event_id, &0);
     assert_eq!(client.ticket_count(&event_id), 2);
 }
+
+#[test]
+fn test_tier_count_returns_correct_count() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, _, _, client) = setup(&env);
+    let organizer = Address::generate(&env);
+
+    // default_tiers has 2 tiers (General + VIP)
+    let event_id = create_test_event(&env, &client, &organizer);
+
+    assert_eq!(client.tier_count(&event_id), 2);
+}
+
+#[test]
+fn test_buy_ticket_rejected_on_ended_event() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (_, token_admin, _, client) = setup(&env);
+    let organizer = Address::generate(&env);
+    let buyer = Address::generate(&env);
+
+    token_admin.mint(&buyer, &100_000_000_i128);
+
+    let event_id = create_test_event(&env, &client, &organizer);
+    client.end_event(&organizer, &event_id);
+
+    assert_eq!(client.get_event(&event_id).status, EventStatus::Ended);
+
+    let result = client.try_buy_ticket(&buyer, &event_id, &0);
+    assert!(result.is_err());
+}
