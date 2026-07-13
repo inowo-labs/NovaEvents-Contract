@@ -375,7 +375,6 @@ fn test_double_initialize_rejected() {
 
     let (token_addr, _, _, client) = setup(&env);
 
-    // setup() already called initialize once; a second call must fail
     let result = client.try_initialize(&token_addr);
     assert!(result.is_err());
 }
