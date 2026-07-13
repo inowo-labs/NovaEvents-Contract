@@ -620,10 +620,6 @@ fn test_sponsor_count_returns_correct_count_after_sponsorships() {
 
     client.sponsor_event(&sponsor_b, &event_id, &200_000_000_i128);
     assert_eq!(client.sponsor_count(&event_id), 2);
-    // create_test_event uses default_tiers which has 2 tiers (General + VIP)
-    let event_id = create_test_event(&env, &client, &organizer);
-
-    assert_eq!(client.tier_count(&event_id), 2);
 }
 
 #[test]
