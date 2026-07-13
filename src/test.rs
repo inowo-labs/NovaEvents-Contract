@@ -589,7 +589,6 @@ fn test_get_organizer_nonexistent_event_fails() {
 
 #[test]
 fn test_sponsor_count_returns_zero_with_no_sponsors() {
-fn test_tier_count_returns_correct_count() {
     let env = Env::default();
     env.mock_all_auths();
 
@@ -598,7 +597,6 @@ fn test_tier_count_returns_correct_count() {
 
     let event_id = create_test_event(&env, &client, &organizer);
 
-    // No sponsorships have been made — count must be 0.
     assert_eq!(client.sponsor_count(&event_id), 0);
 }
 
