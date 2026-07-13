@@ -373,7 +373,6 @@ impl NovaEventsContract {
     }
 
     /// Returns the total number of sponsorship contributions for an event.
-    /// Returns 0 if the event has no sponsors yet.
     pub fn sponsor_count(env: Env, event_id: u32) -> u32 {
         let sponsorships: Vec<Sponsorship> = env
             .storage()
