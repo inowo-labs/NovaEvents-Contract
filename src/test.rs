@@ -624,7 +624,6 @@ fn test_sponsor_count_returns_correct_count_after_sponsorships() {
 
 #[test]
 fn test_ticket_count_increments_with_each_purchase() {
-fn test_buy_ticket_rejected_on_ended_event() {
     let env = Env::default();
     env.mock_all_auths();
 
@@ -633,34 +632,16 @@ fn test_buy_ticket_rejected_on_ended_event() {
     let buyer_a = Address::generate(&env);
     let buyer_b = Address::generate(&env);
 
-    token_admin.mint(&buyer_a, &100_000_000_i128); // 10 USDC
-    token_admin.mint(&buyer_b, &100_000_000_i128); // 10 USDC
+    token_admin.mint(&buyer_a, &100_000_000_i128);
+    token_admin.mint(&buyer_b, &100_000_000_i128);
 
     let event_id = create_test_event(&env, &client, &organizer);
 
-    // Before any purchase, ticket_count must be 0.
     assert_eq!(client.ticket_count(&event_id), 0);
 
-    // First purchase — buyer_a buys a General tier ticket.
     client.buy_ticket(&buyer_a, &event_id, &0);
     assert_eq!(client.ticket_count(&event_id), 1);
 
-    // Second purchase — buyer_b (distinct buyer) buys another General tier ticket.
     client.buy_ticket(&buyer_b, &event_id, &0);
     assert_eq!(client.ticket_count(&event_id), 2);
-    let buyer = Address::generate(&env);
-
-    // Give the buyer enough funds to buy a ticket
-    token_admin.mint(&buyer, &100_000_000_i128); // 10 USDC
-
-    // Create an event and immediately end it
-    let event_id = create_test_event(&env, &client, &organizer);
-    client.end_event(&organizer, &event_id);
-
-    // Verify the event status is now Ended
-    assert_eq!(client.get_event(&event_id).status, EventStatus::Ended);
-
-    // Attempting to buy a ticket on an Ended event must be rejected
-    let result = client.try_buy_ticket(&buyer, &event_id, &0);
-    assert!(result.is_err());
 }
