@@ -434,8 +434,6 @@ impl NovaEventsContract {
         event.balance
     }
 
-    /// Returns the organizer address for an event.
-    /// Convenience wrapper so callers don't decode the full Event struct.
     pub fn get_organizer(env: Env, event_id: u32) -> Address {
         env.storage()
             .persistent()
