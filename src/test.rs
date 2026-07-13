@@ -388,7 +388,6 @@ fn test_sponsor_nonexistent_event_fails() {
     let sponsor = Address::generate(&env);
     token_admin.mint(&sponsor, &500_000_000_i128);
 
-    // No event created — event_id 99 does not exist
     let result = client.try_sponsor_event(&sponsor, &99, &100_000_000_i128);
     assert!(result.is_err());
 }
