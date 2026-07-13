@@ -456,7 +456,6 @@ fn test_invalid_tier_index_rejected() {
 
     let event_id = create_test_event(&env, &client, &organizer);
 
-    // default_tiers has 2 tiers (index 0 and 1); index 99 is out of range
     let result = client.try_buy_ticket(&buyer, &event_id, &99);
     assert!(result.is_err());
 }
