@@ -214,7 +214,6 @@ impl NovaEventsContract {
             &price,
         );
 
-        // Rebuild tiers with updated sold count for the purchased tier.
         let mut updated: Vec<TicketTier> = Vec::new(&env);
         for i in 0..tiers.len() {
             let t: TicketTier = tiers.get(i).unwrap();
