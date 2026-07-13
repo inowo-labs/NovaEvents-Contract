@@ -390,7 +390,7 @@ impl NovaEventsContract {
             .storage()
             .persistent()
             .get(&DataKey::Tiers(event_id))
-            .expect("event not found");
+            .expect("tiers not found");
         tiers.len()
     }
 
