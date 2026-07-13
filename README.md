@@ -145,6 +145,8 @@ stellar contract deploy \
 | `get_token` | — | `Address` | Returns the USDC token contract address configured during `initialize` |
 | `get_balance` | `event_id: u32` | `i128` | Returns the current USDC balance held by the contract for an event |
 | `get_organizer` | `event_id: u32` | `Address` | Returns the organizer address for an event |
+| `sponsor_count` | `event_id: u32` | `u32` | Returns the total number of sponsorship contributions for an event |
+| `tier_count` | `event_id: u32` | `u32` | Returns the number of ticket tiers for an event |
 
 ## Contributing
 
